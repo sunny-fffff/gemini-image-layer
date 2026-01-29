@@ -1,0 +1,11 @@
+# Google Cloud Vision API
+google-cloud-vision>=3.5.0
+
+# Google GenAI SDK (Gemini) - 使用 API Key
+google-genai>=1.0.0
+
+# Image processing
+Pillow>=10.0.0
+
+# Utilities (included with Python, listed for clarity)
+# json, base64, argparse, pathlib are standard library

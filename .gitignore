@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 大型文件和下载的SDK
+google-cloud-sdk/
+google-cloud-cli-darwin-arm.tar.gz
+*.tar.gz
+
+# 运行时生成的文件（可选保留）
+# image/*.json
+# image/output*.jpg
