@@ -1,187 +1,83 @@
 {
-  "full_text": "are\nTEMU\nCLEARANCE\nEVERYTHING MUST GO!\nSHOP NOW >\nfident",
+  "full_text": "TEMU HOME\nKomfort-Schaukelsthul",
   "text_blocks": [
     {
-      "text": "are",
-      "left": 0,
-      "top": 83,
-      "right": 32,
-      "bottom": 117,
-      "width": 32,
-      "height": 34,
-      "center_x": 16.0,
-      "center_y": 100.0
-    },
-    {
       "text": "TEMU",
-      "left": 234,
-      "top": 56,
-      "right": 356,
-      "bottom": 87,
-      "width": 122,
-      "height": 31,
-      "center_x": 295.0,
-      "center_y": 71.5
+      "left": 143,
+      "top": 32,
+      "right": 293,
+      "bottom": 66,
+      "width": 150,
+      "height": 34,
+      "center_x": 218.0,
+      "center_y": 49.0
     },
     {
-      "text": "CLEARANCE",
-      "left": 107,
-      "top": 101,
-      "right": 486,
-      "bottom": 144,
-      "width": 379,
-      "height": 43,
-      "center_x": 296.5,
-      "center_y": 122.5
+      "text": "HOME",
+      "left": 308,
+      "top": 32,
+      "right": 465,
+      "bottom": 66,
+      "width": 157,
+      "height": 34,
+      "center_x": 386.5,
+      "center_y": 49.0
     },
     {
-      "text": "EVERYTHING",
-      "left": 98,
-      "top": 164,
-      "right": 315,
-      "bottom": 190,
-      "width": 217,
-      "height": 26,
-      "center_x": 206.5,
-      "center_y": 177.0
+      "text": "Komfort",
+      "left": 65,
+      "top": 88,
+      "right": 236,
+      "bottom": 134,
+      "width": 171,
+      "height": 46,
+      "center_x": 150.5,
+      "center_y": 111.0
     },
     {
-      "text": "MUST",
-      "left": 327,
-      "top": 164,
-      "right": 424,
-      "bottom": 190,
-      "width": 97,
-      "height": 26,
-      "center_x": 375.5,
-      "center_y": 177.0
+      "text": "-",
+      "left": 236,
+      "top": 88,
+      "right": 253,
+      "bottom": 130,
+      "width": 17,
+      "height": 42,
+      "center_x": 244.5,
+      "center_y": 109.0
     },
     {
-      "text": "GO",
-      "left": 435,
-      "top": 164,
-      "right": 486,
-      "bottom": 190,
-      "width": 51,
-      "height": 26,
-      "center_x": 460.5,
-      "center_y": 177.0
-    },
-    {
-      "text": "!",
-      "left": 486,
-      "top": 164,
-      "right": 500,
-      "bottom": 190,
-      "width": 14,
-      "height": 26,
-      "center_x": 493.0,
-      "center_y": 177.0
-    },
-    {
-      "text": "SHOP",
-      "left": 206,
-      "top": 209,
-      "right": 290,
-      "bottom": 229,
-      "width": 84,
-      "height": 20,
-      "center_x": 248.0,
-      "center_y": 219.0
-    },
-    {
-      "text": "NOW",
-      "left": 296,
-      "top": 209,
-      "right": 367,
-      "bottom": 229,
-      "width": 71,
-      "height": 20,
-      "center_x": 331.5,
-      "center_y": 219.0
-    },
-    {
-      "text": ">",
-      "left": 376,
-      "top": 209,
-      "right": 394,
-      "bottom": 229,
-      "width": 18,
-      "height": 20,
-      "center_x": 385.0,
-      "center_y": 219.0
-    },
-    {
-      "text": "fident",
-      "left": 163,
-      "top": 353,
-      "right": 227,
-      "bottom": 409,
-      "width": 64,
-      "height": 56,
-      "center_x": 195.0,
-      "center_y": 381.0
+      "text": "Schaukelsthul",
+      "left": 255,
+      "top": 83,
+      "right": 544,
+      "bottom": 130,
+      "width": 289,
+      "height": 47,
+      "center_x": 399.5,
+      "center_y": 106.5
     }
   ],
   "text_lines": [
     {
       "texts": [
-        "TEMU"
+        "TEMU",
+        "HOME"
       ],
-      "full_text": "TEMU",
-      "unified_top": 56,
-      "unified_bottom": 87,
-      "unified_height": 31
-    },
-    {
-      "texts": [
-        "are"
-      ],
-      "full_text": "are",
-      "unified_top": 83,
-      "unified_bottom": 117,
+      "full_text": "TEMU HOME",
+      "unified_top": 32,
+      "unified_bottom": 66,
       "unified_height": 34
     },
     {
       "texts": [
-        "CLEARANCE"
+        "Komfort",
+        "-",
+        "Schaukelsthul"
       ],
-      "full_text": "CLEARANCE",
-      "unified_top": 101,
-      "unified_bottom": 144,
-      "unified_height": 43
-    },
-    {
-      "texts": [
-        "EVERYTHING",
-        "MUST",
-        "GO",
-        "!"
-      ],
-      "full_text": "EVERYTHING MUST GO !",
-      "unified_top": 164,
-      "unified_bottom": 190,
-      "unified_height": 26
-    },
-    {
-      "texts": [
-        "SHOP",
-        "NOW",
-        ">"
-      ],
-      "full_text": "SHOP NOW >",
-      "unified_top": 209,
-      "unified_bottom": 229,
-      "unified_height": 20
-    },
-    {
-      "texts": [
-        "fident"
-      ],
-      "full_text": "fident",
-      "unified_top": 353,
-      "unified_bottom": 409,
-      "unified_height": 56
+      "full_text": "Komfort - Schaukelsthul",
+      "unified_top": 83,
+      "unified_bottom": 134,
+      "unified_height": 51
     }
   ],
   "image_path": "/Users/sunnyfang/Documents/git/imagelayer/image/layer1.jpg"

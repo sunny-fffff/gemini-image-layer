@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-使用 Google Cloud Vision API 和 Gemini 3 Pro Preview 生成 fabric.js 图层
+使用 Google Cloud Vision API 和 Gemini 3 Pro 生成 fabric.js 图层
 流程:
 1. 使用 Cloud Vision API 分析图片获取文字坐标
 2. 使用 Gemini 3 Pro Preview 分析图片生成初步的 fabric.js JSON
 3. 将 Vision API 结果 + 初步 fabric.js + 原图送给 Gemini 做整合修正
-4. 使用最终的 fabric.js JSON 渲染生成新图片
+4. 使用 Gemini 3 Pro Image Preview 移除原图中的文字，生成 base image
+5. 在 base image 上渲染新文字
 """
 
 import os
+import io
 import json
 import base64
 import argparse
@@ -176,6 +178,36 @@ def generate_initial_fabric_json(image_path: str) -> dict:
    - 字体样式 (fontWeight: bold/normal, fontStyle: italic/normal)
    - 颜色
    - 字体大小
+   - **字体类型 (fontFamily)** - 请仔细识别！
+
+## 字体识别指南
+
+请仔细观察每个文字的特征来判断字体类型：
+
+### Serif 衬线字体（有装饰性笔画末端）
+- **特征**: 字母末端有小的横线或装饰
+- 示例: Times New Roman, Georgia, Garamond, Palatino, Baskerville, Serif
+
+### Sans-Serif 无衬线字体（干净简洁的笔画）
+- **特征**: 字母末端没有装饰，线条均匀
+- 示例: Arial, Helvetica, Verdana, Tahoma, Impact, Sans-serif
+
+### Script/Handwriting 手写体
+- **特征**: 模仿手写，有连笔或书法风格
+- 示例: Brush Script, Pacifico, Dancing Script, Cursive
+
+### Display/Decorative 装饰性字体
+- **特征**: 独特设计，用于标题
+- 示例: Impact, Cooper Black, Comic Sans
+
+### Monospace 等宽字体
+- **特征**: 每个字符宽度相同
+- 示例: Courier, Consolas, Monaco, Monospace
+
+**重要**: 如果无法确定具体字体名称，请使用通用分类名称：
+- 衬线字体请用: "Serif"
+- 无衬线字体请用: "Sans-serif"
+- 手写体请用: "Cursive"
 
 ## 输出格式（只输出 JSON）
 ```json
@@ -183,7 +215,7 @@ def generate_initial_fabric_json(image_path: str) -> dict:
   "version": "5.3.0",
   "objects": [
     {{"type": "rect", "left": 0, "top": 0, "width": {width}, "height": {height}, "fill": "#FFFFFF"}},
-    {{"type": "textbox", "text": "文字", "left": 100, "top": 50, "fontSize": 24, "fontWeight": "bold", "fontStyle": "normal", "fill": "#000000"}}
+    {{"type": "textbox", "text": "文字", "left": 100, "top": 50, "fontSize": 24, "fontWeight": "bold", "fontStyle": "normal", "fontFamily": "Serif", "fill": "#000000"}}
   ],
   "background": "#FFFFFF"
 }}
@@ -358,21 +390,87 @@ def merge_and_correct_fabric_json(image_path: str, vision_result: dict, initial_
 
 
 def get_font(font_family: str, font_weight: str, font_size: int) -> ImageFont.FreeTypeFont:
-    """根据字体样式获取字体"""
-    font_paths = {
-        "bold": [
-            "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-            "/System/Library/Fonts/Helvetica.ttc",
-        ],
-        "normal": [
-            "/System/Library/Fonts/Supplemental/Arial.ttf",
-            "/System/Library/Fonts/Helvetica.ttc",
-        ],
+    """根据字体样式获取字体，支持多种字体类型"""
+    
+    # 判断字体类型
+    font_family_lower = font_family.lower()
+    is_bold = font_weight.lower() == "bold" or "bold" in font_family_lower or "black" in font_family_lower
+    is_italic = "italic" in font_family_lower or "oblique" in font_family_lower
+    
+    # 字体路径映射（macOS）
+    font_mapping = {
+        # Serif 衬线字体
+        "serif": {
+            "bold_italic": ["/System/Library/Fonts/Supplemental/Times New Roman Bold Italic.ttf"],
+            "bold": ["/System/Library/Fonts/Supplemental/Times New Roman Bold.ttf", "/System/Library/Fonts/Times.ttc"],
+            "italic": ["/System/Library/Fonts/Supplemental/Times New Roman Italic.ttf"],
+            "normal": ["/System/Library/Fonts/Supplemental/Times New Roman.ttf", "/System/Library/Fonts/Times.ttc"],
+        },
+        "times": {
+            "bold_italic": ["/System/Library/Fonts/Supplemental/Times New Roman Bold Italic.ttf"],
+            "bold": ["/System/Library/Fonts/Supplemental/Times New Roman Bold.ttf", "/System/Library/Fonts/Times.ttc"],
+            "italic": ["/System/Library/Fonts/Supplemental/Times New Roman Italic.ttf"],
+            "normal": ["/System/Library/Fonts/Supplemental/Times New Roman.ttf", "/System/Library/Fonts/Times.ttc"],
+        },
+        "georgia": {
+            "bold_italic": ["/System/Library/Fonts/Supplemental/Georgia Bold Italic.ttf"],
+            "bold": ["/System/Library/Fonts/Supplemental/Georgia Bold.ttf"],
+            "italic": ["/System/Library/Fonts/Supplemental/Georgia Italic.ttf"],
+            "normal": ["/System/Library/Fonts/Supplemental/Georgia.ttf"],
+        },
+        # Sans-serif 无衬线字体
+        "sans-serif": {
+            "bold": ["/System/Library/Fonts/Supplemental/Arial Bold.ttf", "/System/Library/Fonts/Helvetica.ttc"],
+            "normal": ["/System/Library/Fonts/Supplemental/Arial.ttf", "/System/Library/Fonts/Helvetica.ttc"],
+        },
+        "arial": {
+            "bold_italic": ["/System/Library/Fonts/Supplemental/Arial Bold Italic.ttf"],
+            "bold": ["/System/Library/Fonts/Supplemental/Arial Bold.ttf"],
+            "italic": ["/System/Library/Fonts/Supplemental/Arial Italic.ttf"],
+            "normal": ["/System/Library/Fonts/Supplemental/Arial.ttf"],
+        },
+        "helvetica": {
+            "bold": ["/System/Library/Fonts/Helvetica.ttc"],
+            "normal": ["/System/Library/Fonts/Helvetica.ttc"],
+        },
+        # Cursive 手写体
+        "cursive": {
+            "bold": ["/System/Library/Fonts/Supplemental/Brush Script.ttf"],
+            "normal": ["/System/Library/Fonts/Supplemental/Brush Script.ttf"],
+        },
+        # Impact
+        "impact": {
+            "bold": ["/System/Library/Fonts/Supplemental/Impact.ttf"],
+            "normal": ["/System/Library/Fonts/Supplemental/Impact.ttf"],
+        },
     }
     
-    is_bold = font_weight.lower() == "bold" or "bold" in font_family.lower() or "black" in font_family.lower()
-    paths_to_try = font_paths["bold"] if is_bold else font_paths["normal"]
+    # 确定字体类型
+    font_type = None
+    for key in font_mapping.keys():
+        if key in font_family_lower:
+            font_type = key
+            break
     
+    # 默认使用 sans-serif
+    if font_type is None:
+        font_type = "sans-serif"
+    
+    # 确定样式键
+    if is_bold and is_italic:
+        style_key = "bold_italic"
+    elif is_bold:
+        style_key = "bold"
+    elif is_italic:
+        style_key = "italic"
+    else:
+        style_key = "normal"
+    
+    # 获取字体路径列表
+    font_dict = font_mapping.get(font_type, font_mapping["sans-serif"])
+    paths_to_try = font_dict.get(style_key, font_dict.get("normal", []))
+    
+    # 尝试加载字体
     for font_path in paths_to_try:
         if os.path.exists(font_path):
             try:
@@ -381,6 +479,18 @@ def get_font(font_family: str, font_weight: str, font_size: int) -> ImageFont.Fr
                     return ImageFont.truetype(font_path, font_size, index=index)
                 else:
                     return ImageFont.truetype(font_path, font_size)
+            except (OSError, IOError):
+                continue
+    
+    # 备用：尝试通用字体
+    fallback_paths = [
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/System/Library/Fonts/Helvetica.ttc",
+    ]
+    for font_path in fallback_paths:
+        if os.path.exists(font_path):
+            try:
+                return ImageFont.truetype(font_path, font_size)
             except (OSError, IOError):
                 continue
     
@@ -426,9 +536,120 @@ def render_text_stretched(img, text: str, left: int, top: int,
     img.paste(temp_img, (left, top), temp_img)
 
 
-def render_fabric_to_image(fabric_json: dict, output_path: str, original_image_path: str = None):
+def get_area_average_color(img, left: int, top: int, width: int, height: int) -> str:
+    """获取区域边缘的平均颜色，用于覆盖文字（备用方案）"""
+    pixels = []
+    img_width, img_height = img.size
+    
+    for x in range(max(0, left), min(img_width, left + width)):
+        if top > 0:
+            pixels.append(img.getpixel((x, max(0, top - 1))))
+    
+    for x in range(max(0, left), min(img_width, left + width)):
+        if top + height < img_height:
+            pixels.append(img.getpixel((x, min(img_height - 1, top + height))))
+    
+    if not pixels:
+        return "#C8BEB4"
+    
+    avg_r = sum(p[0] for p in pixels) // len(pixels)
+    avg_g = sum(p[1] for p in pixels) // len(pixels)
+    avg_b = sum(p[2] for p in pixels) // len(pixels)
+    
+    return f"#{avg_r:02x}{avg_g:02x}{avg_b:02x}"
+
+
+def remove_text_with_gemini_image(image_path: str, output_path: str) -> bool:
+    """
+    Step 4: 使用 Gemini 3 Pro Image Preview 移除图片中的文字，生成干净的 base image
+    
+    Args:
+        image_path: 原图路径
+        output_path: 输出的 base image 路径
+        
+    Returns:
+        是否成功生成 base image
+    """
+    print(f"\n[Step 4] 使用 Gemini Image 移除图片中的文字")
+    
+    client = get_gemini_client()
+    image_part = get_image_part(image_path)
+    
+    prompt_text = """Please remove ALL text and words from this image. 
+Keep the product, background, and all other visual elements intact.
+Only remove the text overlays, logos with text, and any written words.
+The result should be a clean image without any text."""
+    
+    contents = [
+        types.Content(
+            role="user",
+            parts=[image_part, types.Part.from_text(text=prompt_text)]
+        )
+    ]
+    
+    config = types.GenerateContentConfig(
+        temperature=1,
+        top_p=0.95,
+        max_output_tokens=32768,
+        response_modalities=["TEXT", "IMAGE"],
+        safety_settings=[
+            types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"),
+            types.SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"),
+            types.SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"),
+            types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="OFF")
+        ],
+        image_config=types.ImageConfig(
+            aspect_ratio="1:1",
+            image_size="1K",
+            output_mime_type="image/png",
+        ),
+    )
+    
+    try:
+        print("   生成中", end="", flush=True)
+        
+        for chunk in client.models.generate_content_stream(
+            model="gemini-3-pro-image-preview",
+            contents=contents,
+            config=config,
+        ):
+            print(".", end="", flush=True)
+            
+            # 检查是否有图片数据
+            if hasattr(chunk, 'candidates') and chunk.candidates:
+                for candidate in chunk.candidates:
+                    if hasattr(candidate, 'content') and candidate.content:
+                        for part in candidate.content.parts:
+                            if hasattr(part, 'inline_data') and part.inline_data:
+                                # 获取图片数据
+                                image_data = part.inline_data.data
+                                mime_type = part.inline_data.mime_type
+                                
+                                # 保存图片
+                                img = PILImage.open(io.BytesIO(image_data))
+                                img.save(output_path)
+                                print(f"\n   Base image 已保存到: {output_path}")
+                                return True
+        
+        print("\n   警告: 未能生成图片")
+        return False
+        
+    except Exception as e:
+        print(f"\n   错误: {e}")
+        return False
+
+
+def render_fabric_to_image(fabric_json: dict, output_path: str, original_image_path: str = None, 
+                           use_original_as_background: bool = True, vision_result: dict = None):
     """
     Step 4: 使用 PIL 根据 fabric.js JSON 渲染生成新图片
+    
+    Args:
+        fabric_json: fabric.js JSON 结构
+        output_path: 输出图片路径
+        original_image_path: 原图路径
+        use_original_as_background: 是否使用原图作为背景（默认 True）
+        vision_result: Vision API 的结果，用于定位需要覆盖的原文字区域
     """
     print(f"\n[Step 4] 根据 fabric.js JSON 生成新图片: {output_path}")
     
@@ -436,41 +657,78 @@ def render_fabric_to_image(fabric_json: dict, output_path: str, original_image_p
         print("   错误: fabric.js JSON 无效，无法生成图片")
         return
     
-    # 获取画布尺寸
-    if original_image_path:
-        width, height = get_image_dimensions(original_image_path)
+    # 使用原图作为背景，或创建纯色背景
+    if use_original_as_background and original_image_path and os.path.exists(original_image_path):
+        print(f"   使用原图作为背景: {original_image_path}")
+        img = PILImage.open(original_image_path).convert("RGB")
+        width, height = img.size
+        
+        # 覆盖原图中的文字区域
+        if vision_result and "text_blocks" in vision_result:
+            print(f"   覆盖原图中 {len(vision_result['text_blocks'])} 个文字区域...")
+            draw_cover = ImageDraw.Draw(img)
+            for block in vision_result["text_blocks"]:
+                left = int(block["left"])
+                top = int(block["top"])
+                right = int(block["right"])
+                bottom = int(block["bottom"])
+                
+                # 获取文字区域周围的背景色
+                cover_color = get_area_average_color(img, left, top, right - left, bottom - top)
+                
+                # 用背景色覆盖文字区域
+                draw_cover.rectangle([left, top, right, bottom], fill=cover_color)
     else:
-        width, height = 800, 600
+        # 获取画布尺寸
+        if original_image_path:
+            width, height = get_image_dimensions(original_image_path)
+        else:
+            width, height = 800, 600
+        
+        # 创建纯色背景
+        background_color = fabric_json.get("background", "#ffffff")
+        if not background_color or background_color == "transparent":
+            background_color = "#ffffff"
+        if background_color.startswith("rgba"):
+            background_color = "#ffffff"
+        
+        img = PILImage.new("RGB", (width, height), background_color)
     
-    # 创建画布
-    background_color = fabric_json.get("background", "#ffffff")
-    if not background_color or background_color == "transparent":
-        background_color = "#ffffff"
-    if background_color.startswith("rgba"):
-        background_color = "#ffffff"
-    
-    img = PILImage.new("RGB", (width, height), background_color)
     draw = ImageDraw.Draw(img)
     
     # 渲染每个对象
     objects = fabric_json.get("objects", [])
-    print(f"   渲染 {len(objects)} 个对象...")
+    text_count = 0
+    shape_count = 0
     
     for obj in objects:
         obj_type = obj.get("type", "")
         left = float(obj.get("left", 0))
         top = float(obj.get("top", 0))
         
+        # 当使用原图作为背景时，跳过背景矩形（通常是第一个全尺寸矩形）
         if obj_type == "rect":
             obj_width = float(obj.get("width", 100))
             obj_height = float(obj.get("height", 100))
             fill = obj.get("fill", "#ffffff")
             
+            # 判断是否是全尺寸背景矩形
+            is_background_rect = (
+                int(left) == 0 and int(top) == 0 and 
+                abs(obj_width - width) < 10 and abs(obj_height - height) < 10
+            )
+            
+            if use_original_as_background and is_background_rect:
+                # 跳过背景矩形，使用原图
+                continue
+            
+            # 渲染非背景的矩形（如文字背景条）
             if fill and fill != "transparent":
                 draw.rectangle(
                     [int(left), int(top), int(left + obj_width), int(top + obj_height)],
                     fill=fill
                 )
+                shape_count += 1
         
         elif obj_type == "circle":
             radius = float(obj.get("radius", 50))
@@ -481,6 +739,7 @@ def render_fabric_to_image(fabric_json: dict, output_path: str, original_image_p
                     [int(left - radius), int(top - radius), int(left + radius), int(top + radius)],
                     fill=fill
                 )
+                shape_count += 1
         
         elif obj_type in ["text", "textbox", "i-text"]:
             text = obj.get("text", "")
@@ -497,6 +756,7 @@ def render_fabric_to_image(fabric_json: dict, output_path: str, original_image_p
                 target_width, target_height,
                 fill, font_family, font_weight
             )
+            text_count += 1
         
         elif obj_type == "line":
             x2 = float(obj.get("x2", left + 100))
@@ -504,7 +764,94 @@ def render_fabric_to_image(fabric_json: dict, output_path: str, original_image_p
             stroke = obj.get("stroke", "#000000")
             stroke_width = int(obj.get("strokeWidth", 1))
             draw.line([int(left), int(top), int(x2), int(y2)], fill=stroke, width=stroke_width)
+            shape_count += 1
     
+    print(f"   渲染完成: {text_count} 个文字, {shape_count} 个形状")
+    img.save(output_path)
+    print(f"   图片已保存到: {output_path}")
+
+
+def render_on_base_image(fabric_json: dict, base_image_path: str, output_path: str, original_size: tuple = None):
+    """
+    Step 5: 在 base image 上渲染文字和形状
+    
+    Args:
+        fabric_json: fabric.js JSON 结构
+        base_image_path: base image 路径（已移除文字）
+        output_path: 输出图片路径
+        original_size: 原图尺寸，用于坐标缩放
+    """
+    print(f"\n[Step 5] 在 base image 上渲染文字")
+    
+    if "error" in fabric_json:
+        print("   错误: fabric.js JSON 无效，无法渲染")
+        return
+    
+    # 加载 base image
+    img = PILImage.open(base_image_path).convert("RGB")
+    base_width, base_height = img.size
+    print(f"   Base image 尺寸: {base_width}x{base_height}")
+    
+    # 计算缩放比例（如果原图和 base image 尺寸不同）
+    scale_x = 1.0
+    scale_y = 1.0
+    if original_size:
+        orig_width, orig_height = original_size
+        scale_x = base_width / orig_width
+        scale_y = base_height / orig_height
+        if scale_x != 1.0 or scale_y != 1.0:
+            print(f"   坐标缩放比例: x={scale_x:.2f}, y={scale_y:.2f}")
+    
+    draw = ImageDraw.Draw(img)
+    
+    # 渲染每个对象
+    objects = fabric_json.get("objects", [])
+    text_count = 0
+    shape_count = 0
+    
+    for obj in objects:
+        obj_type = obj.get("type", "")
+        left = float(obj.get("left", 0)) * scale_x
+        top = float(obj.get("top", 0)) * scale_y
+        
+        # 跳过背景矩形
+        if obj_type == "rect":
+            obj_width = float(obj.get("width", 100)) * scale_x
+            obj_height = float(obj.get("height", 100)) * scale_y
+            fill = obj.get("fill", "#ffffff")
+            
+            is_background_rect = (
+                int(left) == 0 and int(top) == 0 and 
+                abs(obj_width - base_width) < 10 and abs(obj_height - base_height) < 10
+            )
+            
+            if is_background_rect:
+                continue
+            
+            if fill and fill != "transparent":
+                draw.rectangle(
+                    [int(left), int(top), int(left + obj_width), int(top + obj_height)],
+                    fill=fill
+                )
+                shape_count += 1
+        
+        elif obj_type in ["text", "textbox", "i-text"]:
+            text = obj.get("text", "")
+            fill = obj.get("fill", "#000000")
+            font_family = obj.get("fontFamily", "Arial")
+            font_weight = obj.get("fontWeight", "normal")
+            
+            target_width = int(float(obj.get("width", 100)) * scale_x)
+            target_height = int(float(obj.get("height", 30)) * scale_y)
+            
+            render_text_stretched(
+                img, text, int(left), int(top),
+                target_width, target_height,
+                fill, font_family, font_weight
+            )
+            text_count += 1
+    
+    print(f"   渲染完成: {text_count} 个文字, {shape_count} 个形状")
     img.save(output_path)
     print(f"   图片已保存到: {output_path}")
 
@@ -513,6 +860,7 @@ def main():
     parser = argparse.ArgumentParser(description="使用 Vision API 和 Gemini 生成 fabric.js 图层")
     parser.add_argument("--image", "-i", default="layer1.jpg", help="输入图片名称")
     parser.add_argument("--output", "-o", default="output.jpg", help="输出图片名称")
+    parser.add_argument("--base-output", "-b", default="base_image.png", help="移除文字后的 base image")
     parser.add_argument("--json-output", "-j", default="fabric_output.json", help="最终 fabric.js JSON")
     parser.add_argument("--vision-output", "-v", default="vision_result.json", help="Vision API 结果")
     parser.add_argument("--initial-output", default="fabric_initial.json", help="初步 fabric.js JSON")
@@ -526,6 +874,7 @@ def main():
     # 处理路径
     image_path = image_dir / args.image if not Path(args.image).is_absolute() else Path(args.image)
     output_path = image_dir / args.output
+    base_image_path = image_dir / args.base_output
     json_output_path = image_dir / args.json_output
     vision_output_path = image_dir / args.vision_output
     initial_output_path = image_dir / args.initial_output
@@ -535,8 +884,13 @@ def main():
         return
     
     print("=" * 60)
-    print("Vision API + Gemini 图层生成工具 (三步流程)")
+    print("Vision API + Gemini 图层生成工具 (五步流程)")
     print("=" * 60)
+    print(f"   工作目录: {image_dir}")
+    
+    # 获取原图尺寸
+    original_size = get_image_dimensions(str(image_path))
+    print(f"   原图尺寸: {original_size[0]}x{original_size[1]}")
     
     # Step 1: Vision API 分析
     vision_result = analyze_image_with_vision_api(str(image_path))
@@ -556,8 +910,16 @@ def main():
         json.dump(final_fabric, f, indent=2, ensure_ascii=False)
     print(f"   保存到: {json_output_path}")
     
-    # Step 4: 渲染
-    render_fabric_to_image(final_fabric, str(output_path), str(image_path))
+    # Step 4: 使用 Gemini Image 移除文字
+    base_image_success = remove_text_with_gemini_image(str(image_path), str(base_image_path))
+    
+    # Step 5: 在 base image 上渲染新文字
+    if base_image_success:
+        render_on_base_image(final_fabric, str(base_image_path), str(output_path), original_size)
+    else:
+        print("\n   警告: 使用备用方案（颜色覆盖）")
+        render_fabric_to_image(final_fabric, str(output_path), str(image_path), 
+                               use_original_as_background=True, vision_result=vision_result)
     
     print("\n" + "=" * 60)
     print("处理完成!")
