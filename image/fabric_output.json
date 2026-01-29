@@ -2,69 +2,213 @@
   "version": "5.3.0",
   "objects": [
     {
-      "type": "image",
-      "version": "5.3.0",
-      "originX": "left",
-      "originY": "top",
+      "type": "rect",
       "left": 0,
       "top": 0,
-      "width": 611,
-      "height": 610,
-      "fill": "transparent",
-      "src": "https://via.placeholder.com/611x610?text=Product+Image+Background",
-      "crossOrigin": "anonymous"
+      "width": 512,
+      "height": 514,
+      "fill": "#F06E61",
+      "selectable": false
     },
     {
       "type": "rect",
-      "version": "5.3.0",
-      "originX": "left",
-      "originY": "top",
-      "left": 0,
-      "top": 0,
-      "width": 611,
-      "height": 150,
-      "fill": "#94302C",
-      "stroke": null,
-      "strokeWidth": 0,
-      "visible": true,
-      "opacity": 1
+      "left": 10,
+      "top": 12,
+      "width": 492,
+      "height": 90,
+      "fill": "#96302D",
+      "rx": 10,
+      "ry": 10
+    },
+    {
+      "type": "polygon",
+      "left": 40,
+      "top": 45,
+      "width": 60,
+      "height": 60,
+      "points": [
+        {
+          "x": 30,
+          "y": 0
+        },
+        {
+          "x": 36,
+          "y": 20
+        },
+        {
+          "x": 58,
+          "y": 20
+        },
+        {
+          "x": 42,
+          "y": 35
+        },
+        {
+          "x": 50,
+          "y": 56
+        },
+        {
+          "x": 30,
+          "y": 45
+        },
+        {
+          "x": 10,
+          "y": 56
+        },
+        {
+          "x": 18,
+          "y": 35
+        },
+        {
+          "x": 2,
+          "y": 20
+        },
+        {
+          "x": 24,
+          "y": 20
+        }
+      ],
+      "fill": "#F2A93B",
+      "scaleX": 1.2,
+      "scaleY": 1.2
+    },
+    {
+      "type": "rect",
+      "left": 355,
+      "top": 60,
+      "width": 130,
+      "height": 30,
+      "fill": "#F08632",
+      "rx": 15,
+      "ry": 15
+    },
+    {
+      "type": "image",
+      "src": "placeholder_product_image.png",
+      "left": 25,
+      "top": 110,
+      "width": 462,
+      "height": 340,
+      "opacity": 0.5
+    },
+    {
+      "type": "rect",
+      "left": 15,
+      "top": 472,
+      "width": 155,
+      "height": 28,
+      "fill": "#5DAFA8",
+      "rx": 5,
+      "ry": 5
+    },
+    {
+      "type": "rect",
+      "left": 178,
+      "top": 472,
+      "width": 155,
+      "height": 28,
+      "fill": "#5DAFA8",
+      "rx": 5,
+      "ry": 5
+    },
+    {
+      "type": "rect",
+      "left": 340,
+      "top": 472,
+      "width": 160,
+      "height": 28,
+      "fill": "#5DAFA8",
+      "rx": 5,
+      "ry": 5
     },
     {
       "type": "textbox",
-      "version": "5.3.0",
-      "originX": "left",
-      "originY": "top",
-      "left": 143,
-      "top": 32,
-      "width": 322,
-      "height": 34,
-      "text": "TEMU HOME",
-      "fontSize": 34,
-      "fontWeight": "bold",
-      "fontFamily": "Sans-serif",
-      "fontStyle": "normal",
-      "lineHeight": 1.16,
+      "text": "Detachable Handle Induction Nonstick Cookware Set",
+      "left": 17,
+      "top": 22,
+      "width": 471,
+      "height": 17,
+      "fontSize": 16,
+      "fontWeight": "normal",
+      "fontFamily": "Helvetica Neue",
       "fill": "#FFFFFF",
       "textAlign": "center"
     },
     {
       "type": "textbox",
-      "version": "5.3.0",
-      "originX": "left",
-      "originY": "top",
-      "left": 65,
-      "top": 83,
-      "width": 479,
-      "height": 51,
-      "text": "Komfort - Schaukelsthul",
-      "fontSize": 46,
+      "text": "$0",
+      "left": 44,
+      "top": 58,
+      "width": 47,
+      "height": 30,
+      "fontSize": 30,
+      "fontWeight": "bold",
+      "fontFamily": "Bodoni",
+      "fill": "#FFFFFF"
+    },
+    {
+      "type": "textbox",
+      "text": "Cookware Set",
+      "left": 111,
+      "top": 58,
+      "width": 208,
+      "height": 30,
+      "fontSize": 30,
+      "fontWeight": "bold",
+      "fontFamily": "Bodoni",
+      "fill": "#FFFFFF"
+    },
+    {
+      "type": "textbox",
+      "text": "SHOP NOW >",
+      "left": 364,
+      "top": 67,
+      "width": 107,
+      "height": 14,
+      "fontSize": 13,
+      "fontWeight": "bold",
+      "fontFamily": "Helvetica Neue",
+      "fill": "#FFFFFF"
+    },
+    {
+      "type": "textbox",
+      "text": "Detachable Handles",
+      "left": 27,
+      "top": 481,
+      "width": 129,
+      "height": 13,
+      "fontSize": 12,
       "fontWeight": "normal",
-      "fontFamily": "Serif",
-      "fontStyle": "italic",
-      "lineHeight": 1.16,
+      "fontFamily": "Open Sans",
+      "fill": "#FFFFFF",
+      "textAlign": "center"
+    },
+    {
+      "type": "textbox",
+      "text": "Space - Saving 75 %",
+      "left": 193,
+      "top": 481,
+      "width": 115,
+      "height": 14,
+      "fontSize": 12,
+      "fontWeight": "normal",
+      "fontFamily": "Open Sans",
+      "fill": "#FFFFFF",
+      "textAlign": "center"
+    },
+    {
+      "type": "textbox",
+      "text": "Dishwasher / Oven Safe",
+      "left": 343,
+      "top": 480,
+      "width": 142,
+      "height": 14,
+      "fontSize": 12,
+      "fontWeight": "normal",
+      "fontFamily": "Open Sans",
       "fill": "#FFFFFF",
       "textAlign": "center"
     }
   ],
-  "background": "#FFFFFF"
+  "background": "#F06E61"
 }

@@ -153,9 +153,17 @@ def get_image_part(image_path: str) -> types.Part:
     return types.Part.from_bytes(data=image_data, mime_type=mime_type)
 
 
-def generate_initial_fabric_json(image_path: str) -> dict:
+# 字体参考图片路径
+FONT_STYLE_REFERENCE = "textstyle.jpg"
+
+
+def generate_initial_fabric_json(image_path: str, image_dir: Path = None) -> dict:
     """
     Step 2: 使用 Gemini 分析图片生成初步的 fabric.js JSON（不考虑 Vision API 结果）
+    
+    Args:
+        image_path: 输入图片路径
+        image_dir: 图片目录，用于查找字体参考图片
     """
     print(f"\n[Step 2] 使用 Gemini 分析图片生成初步 fabric.js JSON")
     
@@ -163,7 +171,65 @@ def generate_initial_fabric_json(image_path: str) -> dict:
     width, height = get_image_dimensions(image_path)
     image_part = get_image_part(image_path)
     
-    prompt_text = f"""请分析这张图片，生成 fabric.js JSON 结构来重建图片中的所有图层。
+    # 检查是否有字体参考图片
+    font_reference_part = None
+    
+    if image_dir:
+        font_ref_path = image_dir / FONT_STYLE_REFERENCE
+        if font_ref_path.exists():
+            print(f"   使用字体参考图片: {font_ref_path}")
+            font_reference_part = get_image_part(str(font_ref_path))
+        else:
+            print(f"   字体参考图片不存在，使用文字 prompt 识别字体")
+    else:
+        # 尝试在脚本目录和 image 目录查找
+        script_dir = Path(__file__).parent
+        for search_dir in [script_dir / IMAGE_DIR, script_dir]:
+            font_ref_path = search_dir / FONT_STYLE_REFERENCE
+            if font_ref_path.exists():
+                print(f"   使用字体参考图片: {font_ref_path}")
+                font_reference_part = get_image_part(str(font_ref_path))
+                break
+        if font_reference_part is None:
+            print(f"   字体参考图片不存在，使用文字 prompt 识别字体")
+    
+    # 根据是否有参考图片调整 prompt
+    if font_reference_part:
+        prompt_text = f"""请分析第一张图片，生成 fabric.js JSON 结构来重建图片中的所有图层。
+第二张图片是字体样式参考指南，请参考它来识别第一张图片中的字体类型。
+
+## 图片尺寸（第一张图片）
+- 宽度: {width}px
+- 高度: {height}px
+
+## 任务
+1. 识别背景颜色
+2. 识别所有形状（矩形、圆形等）
+3. 识别所有文字，包括：
+   - 文字内容
+   - 位置坐标 (left, top)
+   - 字体样式 (fontWeight: bold/normal, fontStyle: italic/normal)
+   - 颜色
+   - 字体大小
+   - **字体类型 (fontFamily)** - 请参考第二张图片的字体样式指南来识别！
+
+**重要**: 请参考第二张字体样式参考图来判断每个文字的字体类型！
+
+## 输出格式（只输出 JSON）
+```json
+{{
+  "version": "5.3.0",
+  "objects": [
+    {{"type": "rect", "left": 0, "top": 0, "width": {width}, "height": {height}, "fill": "#FFFFFF"}},
+    {{"type": "textbox", "text": "文字", "left": 100, "top": 50, "fontSize": 24, "fontWeight": "bold", "fontStyle": "normal", "fontFamily": "Serif", "fill": "#000000"}}
+  ],
+  "background": "#FFFFFF"
+}}
+```
+
+请只输出 JSON，不要有其他说明。"""
+    else:
+        prompt_text = f"""请分析这张图片，生成 fabric.js JSON 结构来重建图片中的所有图层。
 
 ## 图片尺寸
 - 宽度: {width}px
@@ -180,34 +246,17 @@ def generate_initial_fabric_json(image_path: str) -> dict:
    - 字体大小
    - **字体类型 (fontFamily)** - 请仔细识别！
 
-## 字体识别指南
+## 字体识别指南（非常重要！请仔细分析每个文字）
 
-请仔细观察每个文字的特征来判断字体类型：
+请放大并仔细观察每个文字的字母特征，特别是:
+- 字母 "l", "i", "t" 的末端是否有装饰线
+- 字母 "O", "C", "S" 的笔画粗细是否均匀
+- 字母 "e", "a" 的形状特征
 
-### Serif 衬线字体（有装饰性笔画末端）
-- **特征**: 字母末端有小的横线或装饰
-- 示例: Times New Roman, Georgia, Garamond, Palatino, Baskerville, Serif
+### Serif 衬线字体（有装饰性笔画末端）- 使用 "Serif"
+### Sans-Serif 无衬线字体（干净简洁）- 使用 "Sans-serif"
 
-### Sans-Serif 无衬线字体（干净简洁的笔画）
-- **特征**: 字母末端没有装饰，线条均匀
-- 示例: Arial, Helvetica, Verdana, Tahoma, Impact, Sans-serif
-
-### Script/Handwriting 手写体
-- **特征**: 模仿手写，有连笔或书法风格
-- 示例: Brush Script, Pacifico, Dancing Script, Cursive
-
-### Display/Decorative 装饰性字体
-- **特征**: 独特设计，用于标题
-- 示例: Impact, Cooper Black, Comic Sans
-
-### Monospace 等宽字体
-- **特征**: 每个字符宽度相同
-- 示例: Courier, Consolas, Monaco, Monospace
-
-**重要**: 如果无法确定具体字体名称，请使用通用分类名称：
-- 衬线字体请用: "Serif"
-- 无衬线字体请用: "Sans-serif"
-- 手写体请用: "Cursive"
+**重要**: 请为每个文字单独判断字体类型！
 
 ## 输出格式（只输出 JSON）
 ```json
@@ -223,7 +272,13 @@ def generate_initial_fabric_json(image_path: str) -> dict:
 
 请只输出 JSON，不要有其他说明。"""
 
-    contents = [types.Content(role="user", parts=[image_part, types.Part.from_text(text=prompt_text)])]
+    # 构建 parts 列表
+    parts = [image_part]
+    if font_reference_part:
+        parts.append(font_reference_part)
+    parts.append(types.Part.from_text(text=prompt_text))
+    
+    contents = [types.Content(role="user", parts=parts)]
     
     config = types.GenerateContentConfig(
         temperature=0.5,
@@ -559,13 +614,39 @@ def get_area_average_color(img, left: int, top: int, width: int, height: int) ->
     return f"#{avg_r:02x}{avg_g:02x}{avg_b:02x}"
 
 
-def remove_text_with_gemini_image(image_path: str, output_path: str) -> bool:
+def get_aspect_ratio_string(width: int, height: int) -> str:
+    """根据宽高计算最接近的标准比例字符串"""
+    ratio = width / height
+    
+    # 支持的比例列表
+    standard_ratios = {
+        "1:1": 1.0,
+        "3:4": 0.75,
+        "4:3": 1.333,
+        "9:16": 0.5625,
+        "16:9": 1.778,
+    }
+    
+    # 找到最接近的比例
+    closest_ratio = "1:1"
+    min_diff = float('inf')
+    for ratio_str, ratio_val in standard_ratios.items():
+        diff = abs(ratio - ratio_val)
+        if diff < min_diff:
+            min_diff = diff
+            closest_ratio = ratio_str
+    
+    return closest_ratio
+
+
+def remove_text_with_gemini_image(image_path: str, output_path: str, original_size: tuple = None) -> bool:
     """
     Step 4: 使用 Gemini 3 Pro Image Preview 移除图片中的文字，生成干净的 base image
     
     Args:
         image_path: 原图路径
         output_path: 输出的 base image 路径
+        original_size: 原图尺寸 (width, height)
         
     Returns:
         是否成功生成 base image
@@ -575,10 +656,19 @@ def remove_text_with_gemini_image(image_path: str, output_path: str) -> bool:
     client = get_gemini_client()
     image_part = get_image_part(image_path)
     
-    prompt_text = """Please remove ALL text and words from this image. 
-Keep the product, background, and all other visual elements intact.
+    # 获取原图尺寸
+    if original_size is None:
+        original_size = get_image_dimensions(image_path)
+    orig_width, orig_height = original_size
+    
+    # 计算最接近的标准比例
+    aspect_ratio = get_aspect_ratio_string(orig_width, orig_height)
+    print(f"   原图尺寸: {orig_width}x{orig_height}, 使用比例: {aspect_ratio}")
+    
+    prompt_text = """Please remove ALL text and words from this image.
+Keep the product, background, all shapes, buttons, and visual elements in their EXACT positions.
 Only remove the text overlays, logos with text, and any written words.
-The result should be a clean image without any text."""
+The result should be a clean image without any text, with all other elements preserved in place."""
     
     contents = [
         types.Content(
@@ -599,7 +689,7 @@ The result should be a clean image without any text."""
             types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="OFF")
         ],
         image_config=types.ImageConfig(
-            aspect_ratio="1:1",
+            aspect_ratio=aspect_ratio,
             image_size="1K",
             output_mime_type="image/png",
         ),
@@ -779,7 +869,7 @@ def render_on_base_image(fabric_json: dict, base_image_path: str, output_path: s
         fabric_json: fabric.js JSON 结构
         base_image_path: base image 路径（已移除文字）
         output_path: 输出图片路径
-        original_size: 原图尺寸，用于坐标缩放
+        original_size: 原图尺寸，用于将 base image resize 到原图尺寸
     """
     print(f"\n[Step 5] 在 base image 上渲染文字")
     
@@ -790,34 +880,32 @@ def render_on_base_image(fabric_json: dict, base_image_path: str, output_path: s
     # 加载 base image
     img = PILImage.open(base_image_path).convert("RGB")
     base_width, base_height = img.size
-    print(f"   Base image 尺寸: {base_width}x{base_height}")
+    print(f"   Base image 原始尺寸: {base_width}x{base_height}")
     
-    # 计算缩放比例（如果原图和 base image 尺寸不同）
-    scale_x = 1.0
-    scale_y = 1.0
-    if original_size:
+    # 如果原图尺寸与 base image 不同，resize base image 到原图尺寸
+    # 这样可以避免坐标缩放问题，使形状和文字位置更精确
+    if original_size and (base_width != original_size[0] or base_height != original_size[1]):
         orig_width, orig_height = original_size
-        scale_x = base_width / orig_width
-        scale_y = base_height / orig_height
-        if scale_x != 1.0 or scale_y != 1.0:
-            print(f"   坐标缩放比例: x={scale_x:.2f}, y={scale_y:.2f}")
+        print(f"   Resize base image 到原图尺寸: {orig_width}x{orig_height}")
+        img = img.resize((orig_width, orig_height), PILImage.Resampling.LANCZOS)
+        base_width, base_height = orig_width, orig_height
     
     draw = ImageDraw.Draw(img)
     
-    # 渲染每个对象
+    # 渲染每个对象（不需要缩放坐标，因为 base image 已 resize 到原图尺寸）
     objects = fabric_json.get("objects", [])
     text_count = 0
     shape_count = 0
     
     for obj in objects:
         obj_type = obj.get("type", "")
-        left = float(obj.get("left", 0)) * scale_x
-        top = float(obj.get("top", 0)) * scale_y
+        left = float(obj.get("left", 0))
+        top = float(obj.get("top", 0))
         
         # 跳过背景矩形
         if obj_type == "rect":
-            obj_width = float(obj.get("width", 100)) * scale_x
-            obj_height = float(obj.get("height", 100)) * scale_y
+            obj_width = float(obj.get("width", 100))
+            obj_height = float(obj.get("height", 100))
             fill = obj.get("fill", "#ffffff")
             
             is_background_rect = (
@@ -841,8 +929,8 @@ def render_on_base_image(fabric_json: dict, base_image_path: str, output_path: s
             font_family = obj.get("fontFamily", "Arial")
             font_weight = obj.get("fontWeight", "normal")
             
-            target_width = int(float(obj.get("width", 100)) * scale_x)
-            target_height = int(float(obj.get("height", 30)) * scale_y)
+            target_width = int(float(obj.get("width", 100)))
+            target_height = int(float(obj.get("height", 30)))
             
             render_text_stretched(
                 img, text, int(left), int(top),
@@ -898,8 +986,8 @@ def main():
         json.dump(vision_result, f, indent=2, ensure_ascii=False)
     print(f"   保存到: {vision_output_path}")
     
-    # Step 2: Gemini 初步分析
-    initial_fabric = generate_initial_fabric_json(str(image_path))
+    # Step 2: Gemini 初步分析（使用字体参考图片或 Google Search grounding）
+    initial_fabric = generate_initial_fabric_json(str(image_path), image_dir)
     with open(initial_output_path, "w", encoding="utf-8") as f:
         json.dump(initial_fabric, f, indent=2, ensure_ascii=False)
     print(f"   保存到: {initial_output_path}")
