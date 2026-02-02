@@ -136,26 +136,33 @@ def get_gemini_client():
     )
 
 
-def get_image_part(image_path: str) -> types.Part:
-    """获取图片 Part"""
-    with open(image_path, "rb") as f:
-        image_data = f.read()
+def get_file_part(file_path: str) -> types.Part:
+    """获取文件 Part (支持图片和 PDF)"""
+    with open(file_path, "rb") as f:
+        file_data = f.read()
     
-    if image_path.lower().endswith('.png'):
+    file_lower = file_path.lower()
+    if file_lower.endswith('.png'):
         mime_type = "image/png"
-    elif image_path.lower().endswith('.gif'):
+    elif file_lower.endswith('.gif'):
         mime_type = "image/gif"
-    elif image_path.lower().endswith('.webp'):
+    elif file_lower.endswith('.webp'):
         mime_type = "image/webp"
+    elif file_lower.endswith('.pdf'):
+        mime_type = "application/pdf"
     else:
         mime_type = "image/jpeg"
     
-    return types.Part.from_bytes(data=image_data, mime_type=mime_type)
+    return types.Part.from_bytes(data=file_data, mime_type=mime_type)
 
 
-# 字体参考图片路径
-FONT_STYLE_REFERENCE = "textstyle.jpg"
+def get_image_part(image_path: str) -> types.Part:
+    """获取图片 Part (兼容旧接口)"""
+    return get_file_part(image_path)
 
+
+# 字体参考文件路径 (支持图片或 PDF)
+FONT_STYLE_REFERENCE = "textstyle.pdf"
 
 def generate_initial_fabric_json(image_path: str, image_dir: Path = None) -> dict:
     """
@@ -177,21 +184,21 @@ def generate_initial_fabric_json(image_path: str, image_dir: Path = None) -> dic
     if image_dir:
         font_ref_path = image_dir / FONT_STYLE_REFERENCE
         if font_ref_path.exists():
-            print(f"   使用字体参考图片: {font_ref_path}")
-            font_reference_part = get_image_part(str(font_ref_path))
+            print(f"   使用字体参考文件: {font_ref_path}")
+            font_reference_part = get_file_part(str(font_ref_path))
         else:
-            print(f"   字体参考图片不存在，使用文字 prompt 识别字体")
+            print(f"   字体参考文件不存在，使用文字 prompt 识别字体")
     else:
         # 尝试在脚本目录和 image 目录查找
         script_dir = Path(__file__).parent
         for search_dir in [script_dir / IMAGE_DIR, script_dir]:
             font_ref_path = search_dir / FONT_STYLE_REFERENCE
             if font_ref_path.exists():
-                print(f"   使用字体参考图片: {font_ref_path}")
-                font_reference_part = get_image_part(str(font_ref_path))
+                print(f"   使用字体参考文件: {font_ref_path}")
+                font_reference_part = get_file_part(str(font_ref_path))
                 break
         if font_reference_part is None:
-            print(f"   字体参考图片不存在，使用文字 prompt 识别字体")
+            print(f"   字体参考文件不存在，使用文字 prompt 识别字体")
     
     # 根据是否有参考图片调整 prompt
     if font_reference_part:

@@ -1,340 +1,96 @@
 {
-  "full_text": "Detachable Handle Induction Nonstick Cookware Set\n$0 Cookware Set\nSHOP NOW >\n=\nDetachable Handles Space-Saving 75%\nDishwasher/Oven Safe",
+  "full_text": "Autumn New Arrival\nSHOP NOW>",
   "text_blocks": [
     {
-      "text": "Detachable",
-      "left": 17,
-      "top": 22,
-      "right": 115,
-      "bottom": 39,
-      "width": 98,
-      "height": 17,
-      "center_x": 66.0,
-      "center_y": 30.5
+      "text": "Autumn",
+      "left": 102,
+      "top": 41,
+      "right": 370,
+      "bottom": 93,
+      "width": 268,
+      "height": 52,
+      "center_x": 236.0,
+      "center_y": 67.0
     },
     {
-      "text": "Handle",
-      "left": 123,
-      "top": 22,
-      "right": 185,
-      "bottom": 39,
-      "width": 62,
-      "height": 17,
-      "center_x": 154.0,
-      "center_y": 30.5
+      "text": "New",
+      "left": 397,
+      "top": 41,
+      "right": 542,
+      "bottom": 93,
+      "width": 145,
+      "height": 52,
+      "center_x": 469.5,
+      "center_y": 67.0
     },
     {
-      "text": "Induction",
-      "left": 190,
-      "top": 22,
-      "right": 273,
-      "bottom": 39,
-      "width": 83,
-      "height": 17,
-      "center_x": 231.5,
-      "center_y": 30.5
-    },
-    {
-      "text": "Nonstick",
-      "left": 280,
-      "top": 22,
-      "right": 359,
-      "bottom": 39,
-      "width": 79,
-      "height": 17,
-      "center_x": 319.5,
-      "center_y": 30.5
-    },
-    {
-      "text": "Cookware",
-      "left": 363,
-      "top": 22,
-      "right": 454,
-      "bottom": 39,
-      "width": 91,
-      "height": 17,
-      "center_x": 408.5,
-      "center_y": 30.5
-    },
-    {
-      "text": "Set",
-      "left": 458,
-      "top": 22,
-      "right": 488,
-      "bottom": 39,
-      "width": 30,
-      "height": 17,
-      "center_x": 473.0,
-      "center_y": 30.5
-    },
-    {
-      "text": "$",
-      "left": 44,
-      "top": 58,
-      "right": 63,
-      "bottom": 88,
-      "width": 19,
-      "height": 30,
-      "center_x": 53.5,
-      "center_y": 73.0
-    },
-    {
-      "text": "0",
-      "left": 66,
-      "top": 58,
-      "right": 91,
-      "bottom": 88,
-      "width": 25,
-      "height": 30,
-      "center_x": 78.5,
-      "center_y": 73.0
-    },
-    {
-      "text": "Cookware",
-      "left": 111,
-      "top": 58,
-      "right": 261,
-      "bottom": 88,
-      "width": 150,
-      "height": 30,
-      "center_x": 186.0,
-      "center_y": 73.0
-    },
-    {
-      "text": "Set",
-      "left": 268,
-      "top": 58,
-      "right": 319,
-      "bottom": 88,
-      "width": 51,
-      "height": 30,
-      "center_x": 293.5,
-      "center_y": 73.0
+      "text": "Arrival",
+      "left": 566,
+      "top": 41,
+      "right": 785,
+      "bottom": 93,
+      "width": 219,
+      "height": 52,
+      "center_x": 675.5,
+      "center_y": 67.0
     },
     {
       "text": "SHOP",
-      "left": 364,
-      "top": 67,
-      "right": 413,
-      "bottom": 81,
-      "width": 49,
-      "height": 14,
-      "center_x": 388.5,
-      "center_y": 74.0
+      "left": 324,
+      "top": 815,
+      "right": 431,
+      "bottom": 843,
+      "width": 107,
+      "height": 28,
+      "center_x": 377.5,
+      "center_y": 829.0
     },
     {
       "text": "NOW",
-      "left": 415,
-      "top": 67,
-      "right": 455,
-      "bottom": 81,
-      "width": 40,
-      "height": 14,
-      "center_x": 435.0,
-      "center_y": 74.0
+      "left": 443,
+      "top": 815,
+      "right": 539,
+      "bottom": 843,
+      "width": 96,
+      "height": 28,
+      "center_x": 491.0,
+      "center_y": 829.0
     },
     {
       "text": ">",
-      "left": 460,
-      "top": 67,
-      "right": 471,
-      "bottom": 81,
-      "width": 11,
-      "height": 14,
-      "center_x": 465.5,
-      "center_y": 74.0
-    },
-    {
-      "text": "=",
-      "left": 95,
-      "top": 403,
-      "right": 128,
-      "bottom": 427,
-      "width": 33,
-      "height": 24,
-      "center_x": 111.5,
-      "center_y": 415.0
-    },
-    {
-      "text": "Detachable",
-      "left": 27,
-      "top": 481,
-      "right": 102,
-      "bottom": 494,
-      "width": 75,
-      "height": 13,
-      "center_x": 64.5,
-      "center_y": 487.5
-    },
-    {
-      "text": "Handles",
-      "left": 103,
-      "top": 481,
-      "right": 156,
-      "bottom": 494,
-      "width": 53,
-      "height": 13,
-      "center_x": 129.5,
-      "center_y": 487.5
-    },
-    {
-      "text": "Space",
-      "left": 193,
-      "top": 481,
-      "right": 232,
-      "bottom": 495,
-      "width": 39,
-      "height": 14,
-      "center_x": 212.5,
-      "center_y": 488.0
-    },
-    {
-      "text": "-",
-      "left": 231,
-      "top": 481,
-      "right": 237,
-      "bottom": 494,
-      "width": 6,
-      "height": 13,
-      "center_x": 234.0,
-      "center_y": 487.5
-    },
-    {
-      "text": "Saving",
-      "left": 235,
-      "top": 481,
-      "right": 279,
-      "bottom": 494,
-      "width": 44,
-      "height": 13,
-      "center_x": 257.0,
-      "center_y": 487.5
-    },
-    {
-      "text": "75",
-      "left": 282,
-      "top": 481,
-      "right": 298,
-      "bottom": 494,
-      "width": 16,
-      "height": 13,
-      "center_x": 290.0,
-      "center_y": 487.5
-    },
-    {
-      "text": "%",
-      "left": 296,
-      "top": 481,
-      "right": 308,
-      "bottom": 494,
-      "width": 12,
-      "height": 13,
-      "center_x": 302.0,
-      "center_y": 487.5
-    },
-    {
-      "text": "Dishwasher",
-      "left": 343,
-      "top": 480,
-      "right": 416,
-      "bottom": 494,
-      "width": 73,
-      "height": 14,
-      "center_x": 379.5,
-      "center_y": 487.0
-    },
-    {
-      "text": "/",
-      "left": 416,
-      "top": 480,
-      "right": 422,
-      "bottom": 493,
-      "width": 6,
-      "height": 13,
-      "center_x": 419.0,
-      "center_y": 486.5
-    },
-    {
-      "text": "Oven",
-      "left": 420,
-      "top": 480,
-      "right": 452,
-      "bottom": 493,
-      "width": 32,
-      "height": 13,
-      "center_x": 436.0,
-      "center_y": 486.5
-    },
-    {
-      "text": "Safe",
-      "left": 456,
-      "top": 480,
-      "right": 485,
-      "bottom": 493,
-      "width": 29,
-      "height": 13,
-      "center_x": 470.5,
-      "center_y": 486.5
+      "left": 542,
+      "top": 815,
+      "right": 562,
+      "bottom": 843,
+      "width": 20,
+      "height": 28,
+      "center_x": 552.0,
+      "center_y": 829.0
     }
   ],
   "text_lines": [
     {
       "texts": [
-        "Detachable",
-        "Handle",
-        "Induction",
-        "Nonstick",
-        "Cookware",
-        "Set"
+        "Autumn",
+        "New",
+        "Arrival"
       ],
-      "full_text": "Detachable Handle Induction Nonstick Cookware Set",
-      "unified_top": 22,
-      "unified_bottom": 39,
-      "unified_height": 17
+      "full_text": "Autumn New Arrival",
+      "unified_top": 41,
+      "unified_bottom": 93,
+      "unified_height": 52
     },
     {
       "texts": [
-        "$",
-        "0",
-        "Cookware",
-        "Set",
         "SHOP",
         "NOW",
         ">"
       ],
-      "full_text": "$ 0 Cookware Set SHOP NOW >",
-      "unified_top": 58,
-      "unified_bottom": 88,
-      "unified_height": 30
-    },
-    {
-      "texts": [
-        "="
-      ],
-      "full_text": "=",
-      "unified_top": 403,
-      "unified_bottom": 427,
-      "unified_height": 24
-    },
-    {
-      "texts": [
-        "Detachable",
-        "Handles",
-        "Space",
-        "-",
-        "Saving",
-        "75",
-        "%",
-        "Dishwasher",
-        "/",
-        "Oven",
-        "Safe"
-      ],
-      "full_text": "Detachable Handles Space - Saving 75 % Dishwasher / Oven Safe",
-      "unified_top": 480,
-      "unified_bottom": 495,
-      "unified_height": 15
+      "full_text": "SHOP NOW >",
+      "unified_top": 815,
+      "unified_bottom": 843,
+      "unified_height": 28
     }
   ],
-  "image_path": "/Users/sunnyfang/Documents/git/imagelayer/image/layer1.jpg"
+  "image_path": "/Users/sunnyfang/Documents/git/imagelayer/image/layer5.jpg"
 }

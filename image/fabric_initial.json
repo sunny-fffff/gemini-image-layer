@@ -5,194 +5,65 @@
       "type": "rect",
       "left": 0,
       "top": 0,
-      "width": 512,
-      "height": 514,
-      "fill": "#F06E61",
-      "selectable": false
+      "width": 889,
+      "height": 897,
+      "fill": "#A4B8D7",
+      "strokeWidth": 0
     },
     {
-      "type": "rect",
-      "left": 10,
-      "top": 12,
-      "width": 492,
-      "height": 90,
-      "fill": "#96302D",
-      "rx": 10,
-      "ry": 10
-    },
-    {
-      "type": "text",
-      "text": "Detachable Handle Induction Nonstick Cookware Set",
-      "left": 256,
-      "top": 20,
-      "fontSize": 18,
-      "fontWeight": "normal",
-      "fontFamily": "Helvetica Neue",
-      "fill": "#FFFFFF",
-      "originX": "center"
-    },
-    {
-      "type": "polygon",
-      "left": 40,
+      "type": "textbox",
+      "text": "Autumn New Arrival",
+      "left": 134,
       "top": 45,
-      "points": [
-        {
-          "x": 30,
-          "y": 0
-        },
-        {
-          "x": 36,
-          "y": 20
-        },
-        {
-          "x": 58,
-          "y": 20
-        },
-        {
-          "x": 42,
-          "y": 35
-        },
-        {
-          "x": 50,
-          "y": 56
-        },
-        {
-          "x": 30,
-          "y": 45
-        },
-        {
-          "x": 10,
-          "y": 56
-        },
-        {
-          "x": 18,
-          "y": 35
-        },
-        {
-          "x": 2,
-          "y": 20
-        },
-        {
-          "x": 24,
-          "y": 20
-        }
-      ],
-      "fill": "#F2A93B",
-      "scaleX": 1.2,
-      "scaleY": 1.2
-    },
-    {
-      "type": "text",
-      "text": "$0",
-      "left": 58,
-      "top": 55,
-      "fontSize": 32,
-      "fontWeight": "bold",
-      "fontFamily": "Bodoni",
-      "fill": "#FFFFFF"
-    },
-    {
-      "type": "text",
-      "text": "Cookware Set",
-      "left": 115,
-      "top": 60,
-      "fontSize": 34,
-      "fontWeight": "bold",
-      "fontFamily": "Bodoni",
-      "fill": "#FFFFFF"
+      "width": 620,
+      "fontSize": 72,
+      "fontWeight": "normal",
+      "fontStyle": "normal",
+      "fontFamily": "Crimson Text",
+      "fill": "#FFFFFF",
+      "textAlign": "center"
     },
     {
       "type": "rect",
-      "left": 355,
-      "top": 60,
-      "width": 130,
-      "height": 30,
-      "fill": "#F08632",
-      "rx": 15,
-      "ry": 15
+      "left": 105,
+      "top": 130,
+      "width": 679,
+      "height": 690,
+      "fill": "#6D696A",
+      "strokeWidth": 0
     },
     {
-      "type": "text",
+      "type": "rect",
+      "left": 105,
+      "top": 130,
+      "width": 679,
+      "height": 690,
+      "fill": "transparent",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 3
+    },
+    {
+      "type": "rect",
+      "left": 304,
+      "top": 795,
+      "width": 280,
+      "height": 60,
+      "fill": "#FFFFFF",
+      "strokeWidth": 0
+    },
+    {
+      "type": "textbox",
       "text": "SHOP NOW >",
-      "left": 420,
-      "top": 68,
-      "fontSize": 14,
-      "fontWeight": "bold",
-      "fontFamily": "Helvetica Neue",
-      "fill": "#FFFFFF",
-      "originX": "center"
-    },
-    {
-      "type": "image",
-      "src": "placeholder_product_image.png",
-      "left": 25,
-      "top": 110,
-      "width": 462,
-      "height": 340
-    },
-    {
-      "type": "rect",
-      "left": 15,
-      "top": 470,
-      "width": 155,
-      "height": 28,
-      "fill": "#5DAFA8",
-      "rx": 5,
-      "ry": 5
-    },
-    {
-      "type": "text",
-      "text": "Detachable Handles",
-      "left": 92,
-      "top": 476,
-      "fontSize": 12,
-      "fontWeight": "normal",
-      "fontFamily": "Open Sans",
-      "fill": "#FFFFFF",
-      "originX": "center"
-    },
-    {
-      "type": "rect",
-      "left": 178,
-      "top": 470,
-      "width": 155,
-      "height": 28,
-      "fill": "#5DAFA8",
-      "rx": 5,
-      "ry": 5
-    },
-    {
-      "type": "text",
-      "text": "Space-Saving 75%",
-      "left": 255,
-      "top": 476,
-      "fontSize": 12,
-      "fontWeight": "normal",
-      "fontFamily": "Open Sans",
-      "fill": "#FFFFFF",
-      "originX": "center"
-    },
-    {
-      "type": "rect",
       "left": 340,
-      "top": 470,
-      "width": 160,
-      "height": 28,
-      "fill": "#5DAFA8",
-      "rx": 5,
-      "ry": 5
-    },
-    {
-      "type": "text",
-      "text": "Dishwasher/Oven Safe",
-      "left": 420,
-      "top": 476,
-      "fontSize": 12,
-      "fontWeight": "normal",
-      "fontFamily": "Open Sans",
-      "fill": "#FFFFFF",
-      "originX": "center"
+      "top": 810,
+      "width": 208,
+      "fontSize": 28,
+      "fontWeight": "bold",
+      "fontStyle": "normal",
+      "fontFamily": "Inter",
+      "fill": "#557699",
+      "textAlign": "center"
     }
   ],
-  "background": "#F06E61"
+  "background": "#A4B8D7"
 }
