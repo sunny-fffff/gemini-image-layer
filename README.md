@@ -37,7 +37,7 @@ gcloud auth application-default login
 ### 2. 安装依赖
 
 ```bash
-cd /Users/sunnyfang/Documents/git/imagelayer
+cd ～/git/imagelayer
 pip install -r requirements.txt
 ```
 
@@ -89,7 +89,7 @@ python vision_to_fabric.py -i myimage.jpg -o result.jpg -b base.png -j final.jso
 {
   "text_blocks": [
     {
-      "text": "TEMU",
+      "text": "TEST",
       "left": 234,
       "top": 56,
       "width": 122,
@@ -100,8 +100,8 @@ python vision_to_fabric.py -i myimage.jpg -o result.jpg -b base.png -j final.jso
   ],
   "text_lines": [
     {
-      "texts": ["TEMU", "HOME"],
-      "full_text": "TEMU HOME",
+      "texts": ["TEST", "HOME"],
+      "full_text": "TEST HOME",
       "unified_top": 56,
       "unified_height": 31
     }
